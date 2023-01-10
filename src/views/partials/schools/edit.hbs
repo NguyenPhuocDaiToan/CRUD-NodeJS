@@ -1,0 +1,122 @@
+<input type="text" value="{{school.province.code}}" id="provinceCode" hidden>
+<input type="text" value="{{school.district.code}}" id="districtCode" hidden>
+<input type="text" value="{{school.ward.code}}" id="wardCode" hidden>
+
+<h3 class="p-3 text-center text-success">Sửa trường học</h3>
+<form action="/schools/update/{{school._id}}" method="POST" class="pb-5">
+    <div class="form-group row">
+        <label for="inputName" class="col-sm-2 col-form-label">Tên trường</label>
+        <div class="col-sm-10">
+            <input type="text" class="form-control" id="inputName" placeholder="Tên trường" name="name"
+                value="{{school.name}}">
+        </div>
+    </div>
+
+    <div class="form-group row">
+        <label for="inputLocation" class="col-sm-2 col-form-label">Địa chỉ</label>
+        <div class="col-sm-10">
+            <input type="text" class="form-control" id="inputLocation" placeholder="Số nhà, Tên đường" name="location"
+                value="{{school.location}}">
+        </div>
+    </div>
+
+    <div class="form-group row">
+        <label for="province" class="col-sm-2 col-form-label">Thành phố/Tỉnh</label>
+        <div class="col-sm-10">
+            <select name="province" id="province" class="form-control">
+                <option value="">{{school.province.name}}</option>
+            </select>
+        </div>
+    </div>
+
+    <div class="form-group row">
+        <label for="district" class="col-sm-2 col-form-label">Quận/Huyện</label>
+        <div class="col-sm-10">
+            <select name="district" id="district" class="form-control">
+                <option value="">{{school.district.name}}</option>
+            </select>
+        </div>
+    </div>
+
+    <div class="form-group row">
+        <label for="ward" class="col-sm-2 col-form-label">Phường/Xã</label>
+        <div class="col-sm-10">
+            <select name="ward" id="ward" class="form-control">
+                <option value="">{{school.ward.name}}</option>
+            </select>
+        </div>
+    </div>
+
+    <div class="form-group row">
+        <label class="col-sm-2 col-form-label"></label>
+        <div class="col-sm-10 text-right mr-3">
+            <input type="submit" value="Sửa" class="btn btn-success">
+        </div>
+    </div>
+</form>
+
+
+<script>
+    let elementSelectProvince = document.getElementById('province');
+    let elementSelectDistrict = document.getElementById('district');
+    let elementSelectWard = document.getElementById('ward');
+
+    async function getAPIProvinces() {
+        const response = await fetch("https://vn-public-apis.fpo.vn/provinces/getAll?limit=-1");
+        return response.json();
+    }
+
+    async function getAPIDistricts(code) {
+        const response = await fetch(`https://vn-public-apis.fpo.vn/districts/getByProvince?provinceCode=${code}&limit=-1`);
+        return response.json();
+    }
+
+    async function getAPIWards(code) {
+        const response = await fetch(`https://vn-public-apis.fpo.vn/wards/getByDistrict?districtCode=${code}&limit=-1`);
+        return response.json();
+    }
+
+    window.addEventListener("load", async () => {
+        let provinceCode = document.getElementById('provinceCode').value;
+        let districtCode = document.getElementById('districtCode').value;
+        let wardCode = document.getElementById('wardCode').value;
+
+        let dataProvinces = await getAPIProvinces();
+        let dataDistricts = await getAPIDistricts(provinceCode);
+        let dataWards = await getAPIWards(districtCode);
+        getOptionsHtml(dataProvinces, elementSelectProvince, provinceCode, true);
+        getOptionsHtml(dataDistricts, elementSelectDistrict, districtCode, true);
+        getOptionsHtml(dataWards, elementSelectWard, wardCode, true);
+    });
+
+    elementSelectProvince.addEventListener("change", async (event) => {
+        let dataDistricts = await getAPIDistricts(JSON.parse(event.target.value).code);
+        getOptionsHtml(dataDistricts, elementSelectDistrict, '', false, 'Quận/Huyện');
+        elementSelectWard.innerHTML = '<option value="" selected>Phường Xã</option>'
+    });
+
+    elementSelectDistrict.addEventListener("change", async (event) => {
+        let dataWards = await getAPIWards(JSON.parse(event.target.value).code);
+        getOptionsHtml(dataWards, elementSelectWard, '', false, 'Phường/Xã');
+    });
+
+    function getOptionsHtml(objects, element, code = '', selected = false, firstOption = '') {
+        objects = objects.data.data.map((d) => { return { code: d.code, name: d.name, }; });
+        let optionsHtml = '';
+        if (selected) {
+            objects.forEach((o) => {
+                if (o.code == code) {
+                    optionsHtml += `<option value='${JSON.stringify(o)}' selected>${o.name}</option>`;
+                } else {
+                    optionsHtml += `<option value='${JSON.stringify(o)}'>${o.name}</option>`;
+                }
+            });
+        } else {
+            optionsHtml = `<option value="" selected disabled>${firstOption}</option>`;
+            objects.forEach((o) => {
+                optionsHtml += `<option value='${JSON.stringify(o)}'>${o.name}</option>`;
+            });
+        }
+        element.innerHTML = optionsHtml;
+    }
+</script>

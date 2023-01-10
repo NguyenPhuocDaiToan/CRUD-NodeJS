@@ -1,0 +1,34 @@
+<h3 class="text-center p-3 mb-0">Quản lý lớp học</h3>
+<div>
+    <a class="btn btn-success mb-3" href="classes/create">Thêm lớp học</a>
+</div>
+<table class="table table-striped">
+    <thead>
+        <tr>
+            <th scope="col">STT</th>
+            <th scope="col">Lớp</th>
+            <th scope="col">Trường</th>
+            <th scope="col">Địa chỉ</th>
+            <th scope="col">Huyện/Quận</th>
+            <th scope="col">Tỉnh/T.Phố</th>
+            <th scope="col">Hành động</th>
+        </tr>
+    </thead>
+    <tbody>
+        {{#each classes}}
+        <tr>
+            <td>{{add @index 1}}</td>
+            <td>{{this.name}}</td>
+            <td>{{this.school.name}}</td>
+            <td>{{this.school.location}}</td>
+            <td>{{this.school.district.name}}</td>
+            <td>{{this.school.province.name}}</td>
+            <td>
+                <a href="/classes/detail/{{this._id}}" class="btn btn-info">Chi tiết</a>
+                <a href="/classes/edit/{{this._id}}" class="btn btn-warning">Sửa</a>
+                <a href="/classes/delete/{{this._id}}" class="btn btn-danger">Xoá</a>
+            </td>
+        </tr>
+        {{/each}}
+    </tbody>
+</table>

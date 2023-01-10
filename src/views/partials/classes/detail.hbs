@@ -1,0 +1,88 @@
+<h3 class="text-center p-3 mb-0">Chi tiết lớp học</h3>
+<div class="row">
+    <p class="col-4"><b>Tên lớp: </b>{{class.name}}</p>
+    <p class="col-4"><b>Tên trường: </b>{{class.school.name}}</p>
+    <p class="col-4"><b>Địa chỉ: </b>{{class.school.location}}</p>
+    <p class="col-4"><b>Phường/Xã: </b>{{class.school.ward.name}}</p>
+    <p class="col-4"><b>Quận/Huyện: </b>{{class.school.district.name}}</p>
+    <p class="col-4"><b>Thành phố/Tỉnh: </b>{{class.school.province.name}}</p>
+</div>
+
+<div>
+    <button class="btn btn-info mb-3" type="button" onclick="displayFormCreate()">Thêm mới sinh viên</button>
+</div>
+<form action="/students/create" method="POST" class="row align-items-center mt-2 mb-4" style="display: none;" id="formCreate">
+    <input type="text" name="prepath" value="/classes/detail/{{class._id}}" hidden>
+    <input type="text" name="class" value="{{class._id}}" hidden>
+
+    <div class="row">
+        <div class="col-6 d-flex mb-3">
+            <span class="col-3"><b>Tên sinh viên:</b></span>
+            <input type="text" name="name" class="form-control col-9" placeholder="Tên sinh viên">
+        </div>
+
+        <div class="col-6 d-flex mb-3">
+            <span class="col-3"><b>Giới tính:</b></span>
+            <select name="gender" id="gender" class="form-control col-9">
+                <option value="" selected="true" disabled>Chọn giới tính</option>
+                <option value="Nam">Nam</option>
+                <option value="Nữ">Nữ</option>
+                <option value="Khác">Khác</option>
+            </select>
+        </div>
+
+        <div class="col-6 d-flex mb-3">
+            <span class="col-3"><b>Số điện thoại:</b></span>
+            <input type="text" name="phone" class="form-control col-9" placeholder="Số điện thoại">
+        </div>
+
+        <div class="col-6 d-flex mb-3">
+            <span class="col-3"><b>Email:</b></span>
+            <input type="email" name="email" class="form-control col-9" placeholder="Email">
+        </div>
+
+        <div class="col-6 d-flex mb-3">
+            <span class="col-3"><b>Ngày sinh:</b></span>
+            <input type="date" name="birthday" class="form-control col-9">
+        </div>
+
+        <div class="col-6 d-flex mb-3">
+            <input type="submit" value="Thêm mới" class="btn btn-success ml-3" onclick="displayFormCreate()">
+        </div>
+    </div>
+</form>
+
+<table class="table table-striped">
+    <thead>
+        <tr>
+            <th scope="col">STT</th>
+            <th scope="col">Tên</th>
+            <th scope="col">G/Tính</th>
+            <th scope="col">SĐT</th>
+            <th scope="col">Email</th>
+            <th scope="col">Hành động</th>
+        </tr>
+    </thead>
+    <tbody>
+        {{#each students}}
+        <tr>
+            <td>{{add @index 1}}</td>
+            <td>{{this.name}}</td>
+            <td>{{this.gender}}</td>
+            <td>{{this.phone}}</td>
+            <td>{{this.email}}</td>
+            <td>
+                <a href="/students/edit/{{this._id}}" class="btn btn-warning">Sửa</a>
+                <a href="/students/delete/{{this._id}}" class="btn btn-danger">Xoá</a>
+            </td>
+        </tr>
+        {{/each}}
+    </tbody>
+</table>
+
+<script>
+    function displayFormCreate() {
+        let form = document.getElementById('formCreate');
+        form.style.display = form.style.display === 'none' ? 'block' : 'none';
+    }
+</script>

@@ -1,0 +1,47 @@
+<h3 class="text-center p-3 mb-0">Chi tiết trường học</h3>
+<div class="row">
+    <p class="col-4"><b>Trường:</b> {{school.name}}</p>
+    <p class="col-4"><b>Địa chỉ:</b> {{school.location}}</p>
+    <p class="col-4"><b>Phường/Xã:</b> {{school.ward.name}}</p>
+    <p class="col-4"><b>Quận/Huyện:</b> {{school.district.name}}</p>
+    <p class="col-4"><b>Thành phố/Tỉnh:</b> {{school.province.name}}</p>
+</div>
+<div>
+    <button class="btn btn-info mb-3" type="button" onclick="displayFormCreate()">Thêm mới lớp học</button>
+</div>
+<form action="/classes/create" method="POST" class="row align-items-center mt-2 mb-4" style="display: none;" id="formCreate">
+    <input type="text" name="prepath" value="/schools/detail/{{school._id}}" hidden>
+    <span class="ml-3"><b>Tên lớp học:</b></span><input type="text" name="name" class="form-control col-4 ml-3">
+    <input type="text" name="school" value="{{school._id}}" hidden>
+    <input type="submit" value="Thêm mới" class="btn btn-success ml-3">
+</form>
+<table class="table table-striped">
+    <thead>
+        <tr>
+            <th scope="col">STT</th>
+            <th scope="col">Lớp</th>
+            <th scope="col">Hành động</th>
+        </tr>
+    </thead>
+    <tbody>
+        {{#each classes}}
+        <tr>
+            <td>{{add @index 1}}</td>
+            <td>{{this.name}}</td>
+
+            <td>
+                <a href="/classes/detail/{{this._id}}" class="btn btn-info">Chi tiết</a>
+                <a href="/classes/edit/{{this._id}}" class="btn btn-warning">Sửa</a>
+                <a href="/classes/delete/{{this._id}}" class="btn btn-danger">Xoá</a>
+            </td>
+        </tr>
+        {{/each}}
+    </tbody>
+</table>
+
+<script>
+    function displayFormCreate() {
+        let form = document.getElementById('formCreate');
+        form.style.display = form.style.display === 'none' ? 'flex' : 'none';
+    }
+</script>

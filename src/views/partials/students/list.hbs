@@ -1,0 +1,35 @@
+<h3 class="text-center p-3 mb-0">Quản lý sinh viên</h3>
+<div>
+    <a class="btn btn-success mb-3" href="students/create">Thêm sinh viên</a>
+</div>
+<table class="table table-striped">
+    <thead>
+        <tr>
+            <th scope="col">STT</th>
+            <th scope="col">Tên</th>
+            <th scope="col">G/Tính</th>
+            <th scope="col">SĐT</th>
+            <th scope="col">Email</th>
+            <th scope="col">Lớp</th>
+            <th scope="col">Trường</th>
+            <th scope="col">Hành động</th>
+        </tr>
+    </thead>
+    <tbody>
+        {{#each students}}
+        <tr>
+            <td>{{add @index 1}}</td>
+            <td>{{this.name}}</td>
+            <td>{{this.gender}}</td>
+            <td>{{this.phone}}</td>
+            <td>{{this.email}}</td>
+            <td>{{this.class.name}}</td>
+            <td>{{this.class.school.name}}</td>
+            <td>
+                <a href="/students/edit/{{this._id}}" class="btn btn-warning">Sửa</a>
+                <a href="/students/delete/{{this._id}}" class="btn btn-danger">Xoá</a>
+            </td>
+        </tr>
+        {{/each}}
+    </tbody>
+</table>
